@@ -1,23 +1,17 @@
 <?php
 
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
  *
  * @link              http://dagrinchi.com
  * @since             1.0.0
  * @package           woocommerce-addcustom-orderitem-metadata
  *
  * @wordpress-plugin
- * Plugin Name:       WooCommerce add custom order item metadata
+ * Plugin Name:       WooCommerce Add Custom Order Item Metadata
  * Plugin URI:        http://dagrinchi.com/woocommerce-addcustom-orderitem-metadata/
  * Description:       This plugin adds the ability to create new custom metadata to WooCommerce order item like custom codes, dates, status etc.
  * Version:           1.0.0
- * Author:            Dagrinchi
+ * Author:            David Alméciga
  * Author URI:        http://dagrinchi.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -34,22 +28,22 @@ if ( ! defined( 'WPINC' ) ) {
  * The code that runs during plugin activation.
  * This action is documented in includes/class-plugin-name-activator.php
  */
-function activate_plugin_name() {
+function activate_WC_AddCustom_OrderItem_MetaData() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name-activator.php';
-	Plugin_Name_Activator::activate();
+	WC_AddCustom_OrderItem_MetaData_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-plugin-name-deactivator.php
  */
-function deactivate_plugin_name() {
+function deactivate_WC_AddCustom_OrderItem_MetaData() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name-deactivator.php';
-	Plugin_Name_Deactivator::deactivate();
+	WC_AddCustom_OrderItem_MetaData_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_plugin_name' );
-register_deactivation_hook( __FILE__, 'deactivate_plugin_name' );
+register_activation_hook( __FILE__, 'activate_WC_AddCustom_OrderItem_MetaData' );
+register_deactivation_hook( __FILE__, 'deactivate_WC_AddCustom_OrderItem_MetaData' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -66,10 +60,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name.php';
  *
  * @since    1.0.0
  */
-function run_plugin_name() {
+function run_WC_AddCustom_OrderItem_MetaData() {
 
-	$plugin = new Plugin_Name();
+	$plugin = new WC_AddCustom_OrderItem_MetaData();
 	$plugin->run();
 
 }
-run_plugin_name();
+run_WC_AddCustom_OrderItem_MetaData();
