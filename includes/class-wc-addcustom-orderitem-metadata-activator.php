@@ -30,7 +30,8 @@ class WC_AddCustom_OrderItem_MetaData_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+		$role = get_role('shop_manager');
+		$role->add_cap('redeem_codes');
 	}
 
 }

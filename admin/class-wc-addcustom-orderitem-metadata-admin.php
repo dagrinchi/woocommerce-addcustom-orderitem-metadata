@@ -20,6 +20,7 @@
  * @subpackage WC_AddCustom_OrderItem_MetaData/admin
  * @author     Your Name <email@example.com>
  */
+
 class WC_AddCustom_OrderItem_MetaData_Admin {
 
 	/**
@@ -39,6 +40,8 @@ class WC_AddCustom_OrderItem_MetaData_Admin {
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
+
+	private $order_id;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -62,18 +65,12 @@ class WC_AddCustom_OrderItem_MetaData_Admin {
 	public function enqueue_styles() {
 
 		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in WC_AddCustom_OrderItem_MetaData_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
 		 * The WC_AddCustom_OrderItem_MetaData_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->WC_AddCustom_OrderItem_MetaData, plugin_dir_url( __FILE__ ) . 'css/plugin-name-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->WC_AddCustom_OrderItem_MetaData, plugin_dir_url( __FILE__ ) . 'css/wc-addcustom-orderitem-metadata-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -85,19 +82,37 @@ class WC_AddCustom_OrderItem_MetaData_Admin {
 	public function enqueue_scripts() {
 
 		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in WC_AddCustom_OrderItem_MetaData_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
 		 * The WC_AddCustom_OrderItem_MetaData_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->WC_AddCustom_OrderItem_MetaData, plugin_dir_url( __FILE__ ) . 'js/plugin-name-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->WC_AddCustom_OrderItem_MetaData, plugin_dir_url( __FILE__ ) . 'js/wc-addcustom-orderitem-metadata-admin.js', array( 'jquery' ), $this->version, false );
 
+	}
+
+	public function new_order($order_id) {
+		$this->order_id = $order_id;
+	}
+
+	public function add_order_item_meta($item_id, $values, $cart_item_key) {
+		$now = new \DateTime("now");
+		$order = wc_get_order($this->order_id);
+		wc_add_order_item_meta($item_id, "Ref", $item_id, false);
+
+		for ($i=1; $i <= $values["quantity"]; $i++) {
+			$passe = "_ref_" . $item_id . "_" . $i;
+			$passe_meta = [$passe => strtoupper(uniqid()), $passe . "_datetime" => $now->format('Y-m-d H:i:s'), $passe . "_is_active" => 1];
+			foreach ($passe_meta as $key => $value) {
+				wc_add_order_item_meta($item_id, $key, $value);
+			}
+
+			$order->add_order_note("Se activó el código " . $passe_meta[$passe . "_code"] . " para la Ref: " . $item_id . "_" . $i);
+		}
+	}
+
+	public function hidden_order_itemmeta($args) {
+		return $args;
 	}
 
 }

@@ -26,19 +26,19 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-plugin-name-activator.php
+ * This action is documented in includes/class-wc-addcustom-orderitem-metadata-activator.php
  */
 function activate_WC_AddCustom_OrderItem_MetaData() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name-activator.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wc-addcustom-orderitem-metadata-activator.php';
 	WC_AddCustom_OrderItem_MetaData_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-plugin-name-deactivator.php
+ * This action is documented in includes/class-wc-addcustom-orderitem-metadata-deactivator.php
  */
 function deactivate_WC_AddCustom_OrderItem_MetaData() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name-deactivator.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wc-addcustom-orderitem-metadata-deactivator.php';
 	WC_AddCustom_OrderItem_MetaData_Deactivator::deactivate();
 }
 
@@ -49,7 +49,7 @@ register_deactivation_hook( __FILE__, 'deactivate_WC_AddCustom_OrderItem_MetaDat
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-wc-addcustom-orderitem-metadata.php';
 
 /**
  * Begins execution of the plugin.

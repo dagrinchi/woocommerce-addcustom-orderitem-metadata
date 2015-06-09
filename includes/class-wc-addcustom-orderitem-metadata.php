@@ -68,7 +68,7 @@ class WC_AddCustom_OrderItem_MetaData {
 	 */
 	public function __construct() {
 
-		$this->WC_AddCustom_OrderItem_MetaData = 'plugin-name';
+		$this->WC_AddCustom_OrderItem_MetaData = 'wc-addcustom-orderitem-metadata';
 		$this->version = '1.0.0';
 
 		$this->load_dependencies();
@@ -100,24 +100,26 @@ class WC_AddCustom_OrderItem_MetaData {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-plugin-name-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wc-addcustom-orderitem-metadata-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-plugin-name-i18n.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wc-addcustom-orderitem-metadata-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-plugin-name-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wc-addcustom-orderitem-metadata-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-plugin-name-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wc-addcustom-orderitem-metadata-public.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'widgets/class-wc-widget-query-code.php';
 
 		$this->loader = new WC_AddCustom_OrderItem_MetaData_Loader();
 
@@ -152,9 +154,12 @@ class WC_AddCustom_OrderItem_MetaData {
 
 		$plugin_admin = new WC_AddCustom_OrderItem_MetaData_Admin( $this->get_WC_AddCustom_OrderItem_MetaData(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		// $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+		// $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$this->loader->add_action('woocommerce_new_order', $plugin_admin, 'new_order');
+		$this->loader->add_action('woocommerce_add_order_item_meta', $plugin_admin, 'add_order_item_meta', 10, 3);
+		$this->loader->add_filter('woocommerce_hidden_order_itemmeta', $plugin_admin, 'hidden_order_itemmeta');
 	}
 
 	/**
@@ -168,6 +173,7 @@ class WC_AddCustom_OrderItem_MetaData {
 
 		$plugin_public = new WC_AddCustom_OrderItem_MetaData_Public( $this->get_WC_AddCustom_OrderItem_MetaData(), $this->get_version() );
 
+		$this->loader->add_action( 'widgets_init', $plugin_public, 'register_widgets' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
