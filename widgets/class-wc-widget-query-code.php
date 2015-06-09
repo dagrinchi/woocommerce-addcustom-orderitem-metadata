@@ -42,12 +42,23 @@ class WC_Widget_Query_Code extends WP_Widget {
                     <div class="row">Código: ' . $results[3]["meta_value"] .'</div>
                     <div class="row">Valor: $' . $results[1]["meta_value"] / $results[0]["meta_value"]  .'</div>
                     <div class="row">Estado: ' . ($results[5]["meta_value"] ? 'Activo' : 'Inactivo') . '</div>
-                    <div class="row">Fecha: ' . $results[4]["meta_value"] . '</div>
+                    <div class="row">Fecha y hora de ' . ($results[5]["meta_value"] ? 'activación' : 'canje') . ': ' . $results[4]["meta_value"] . '</div>
+                    ' . ($results[5]["meta_value"] ? '<div class="row">
+                                                        <form method="post">
+                                                        <input type="hidden" name="wc_redeem" value="step2">
+                                                        <input type="hidden" name="wc_redeem_code" value="' . $redeem_code . '">
+                                                        <button type="submit">Redimir</button>
+                                                        </form>
+                                                      </div>' : '<div class="row">
+                                                                  <form method="get">
+                                                                  <button type="submit">Consulta Nuevo código</button>
+                                                                  </form>
+                                                                 </div>');
+         } else {
+           $html = '<p>No se encuentra el código solicitado</p>
                     <div class="row">
-                      <form method="post">
-                      <input type="hidden" name="wc_redeem" value="step2">
-                      <input type="hidden" name="wc_redeem_code" value="' . $redeem_code . '">
-                      <button type="submit">Redimir</button>
+                      <form method="get">
+                      <button type="submit">Reintentar</button>
                       </form>
                     </div>';
          }
@@ -88,20 +99,22 @@ class WC_Widget_Query_Code extends WP_Widget {
              wc_update_order_item_meta($order_item_id, $meta_key . "_datetime", $now->format('Y-m-d H:i:s'));
              wc_update_order_item_meta($order_item_id, $meta_key . "_is_active", 0);
 
-             $msg = "Se redimió el código " . $redeem_code . " para " . $meta_key;
+             $msg = "Se redimió el código " . $redeem_code . " para " . $meta_key . " por " . $username;
              wc_get_order($this->get_order_id_by_order_item_id($order_item_id))->add_order_note($msg);
 
-             $html = '<p>' . $msg . '</p>
-                      <div class="row">
-                        <form method="get">
-                        <button type="submit">Nuevo código</button>
-                        </form>
-                      </div>';
+           } else {
+             $msg = "<p>No se encuentra el código solicitado</p>";
            }
 
+           $html = '<p>' . $msg . '</p>
+                    <div class="row">
+                      <form method="get">
+                      <button type="submit">Consulta Nuevo código</button>
+                      </form>
+                    </div>';
 
          } else {
-           $html = '<p>Este usuario no está habilitado para redimir códigos</p>
+           $html = '<p>Error de usuario y contraseña ó ' . $username . ' no está habilitado para redimir códigos</p>
                     <div class="row">
                       <form method="post">
                         <input type="hidden" id="wc_redeem_user" name="wc_redeem_user" value="' . $username . '">
@@ -135,8 +148,7 @@ class WC_Widget_Query_Code extends WP_Widget {
 
    private function get_order_id_by_order_item_id($order_item_id) {
      global $wpdb;
-     return $wpdb->get_var("SELECT order_id FROM wp_woocommerce_order_items
-                            WHERE order_item_id = '" . $order_item_id . "'");
+     return $wpdb->get_var("SELECT order_id FROM $wpdb->prefix" . "woocommerce_order_items WHERE order_item_id = $order_item_id");
  	 }
 
    private function check_username_password_caps($username, $password) {
